@@ -20,13 +20,10 @@ public class Payment {
 
     @PostPersist
     public void onPrePersist(){
-        System.out.println("***** 결재 처리 중 *****");
-        System.out.println(getId());
-        System.out.println(getOrderId());
-        System.out.println(getProcess());
+        System.out.println("***** 결재 요청 *****");
 
         if("Ordered".equals(process)) {
-            System.out.println("***** 결재 진행 중 *****");
+            System.out.println("***** 결재 진행 *****");
             this.setProcess("Payed");
             PayCompleted payCompleted = new PayCompleted();
             BeanUtils.copyProperties(this, payCompleted);
@@ -42,7 +39,7 @@ public class Payment {
             }
 
 
-        } else if("Order Cancel".equals(process)) {
+        } else if("OrderCancelled".equals(process)) {
             System.out.println("***** 결재 취소 중 *****");
             this.setProcess("Pay Cancelled");
             PayCancelled payCancelled = new PayCancelled();
