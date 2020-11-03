@@ -27,43 +27,28 @@ public class Payment {
 
         if("Ordered".equals(process)) {
             System.out.println("***** 결재 진행 중 *****");
-
+            this.setProcess("Payed");
             PayCompleted payCompleted = new PayCompleted();
-            payCompleted.setId(getId());
-            payCompleted.setOrderId(getOrderId());
-            payCompleted.setProcess("Payed");
             BeanUtils.copyProperties(this, payCompleted);
+            System.out.println(payCompleted.toJson());
             payCompleted.publishAfterCommit();
 
 
-            //바로 이벤트를 보내버리면 주문정보가 커밋되기도 전에 배송발송됨 이벤트가 발송되어 주문테이블의 상태가 바뀌지 않을 수 있다.
-            // TX 리스너는 커밋이 완료된 후에 이벤트를 발생하도록 만들어준다.
-            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
-                @Override
-                public void beforeCommit(boolean readOnly) {
-                    System.out.println("published");
-                    payCompleted.publish();
-                }
-            });
-
-            System.out.println("***** 결재 완료 *****");
-
-//            try {
-//                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
+                System.out.println("***** 결재 완료 *****");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
 
         } else if("Order Cancel".equals(process)) {
             System.out.println("***** 결재 취소 중 *****");
-
+            this.setProcess("Pay Cancelled");
             PayCancelled payCancelled = new PayCancelled();
-            payCancelled.setId(getId());
-            payCancelled.setOrderId(getOrderId());
-            payCancelled.setProcess("Pay Cancelled");
             BeanUtils.copyProperties(this, payCancelled);
             payCancelled.publishAfterCommit();
+            System.out.println("***** 결재 취소 완료 *****");
         }
 
     }
