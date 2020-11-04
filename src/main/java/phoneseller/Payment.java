@@ -24,24 +24,23 @@ public class Payment {
 
         if("Ordered".equals(process)) {
             System.out.println("***** 결재 진행 *****");
-            this.setProcess("Payed");
+            setProcess("Payed");
             PayCompleted payCompleted = new PayCompleted();
             BeanUtils.copyProperties(this, payCompleted);
-            System.out.println(payCompleted.toJson());
             payCompleted.publish();
-
 
 //            try {
 //                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-//
 //            } catch (InterruptedException e) {
 //                e.printStackTrace();
 //            }
+
+            System.out.println(toString());
             System.out.println("***** 결재 완료 *****");
 
         } else if("OrderCancelled".equals(process)) {
             System.out.println("***** 결재 취소 중 *****");
-            this.setProcess("Pay Cancelled");
+            setProcess("Pay Cancelled");
             PayCancelled payCancelled = new PayCancelled();
             BeanUtils.copyProperties(this, payCancelled);
             payCancelled.publish();
@@ -80,7 +79,13 @@ public class Payment {
         this.process = process;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", orderId=" + orderId +
+                ", price=" + price +
+                ", process='" + process + '\'' +
+                '}';
+    }
 }
