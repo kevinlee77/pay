@@ -37,6 +37,10 @@ logging:
     org.springframework.cloud: debug
 server:
   port: 8083
+
+api:
+  url:
+    promotion: http://localhost:8086
 ---
 
 spring:
@@ -62,3 +66,7 @@ spring:
         event-out:
           destination: phoneseller
           contentType: application/json
+
+api:
+  url:
+    promotion: http://promotion:8080
