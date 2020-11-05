@@ -18,6 +18,10 @@ public class Payment {
     private Double price;
     private String process;
 
+    @PrePersist
+    public void onPrePersist() {
+        System.out.println("payment pre persist");
+    }
     @PostPersist
     public void onPostPersist(){
         System.out.println("***** 결재 요청 *****");
@@ -32,7 +36,12 @@ public class Payment {
             System.out.println(toString());
             System.out.println("***** 결재 완료 *****");
 
-        } else if("OrderCancelled".equals(process)) {
+        }
+    }
+
+    @PreUpdate
+    public void onPreUpdate(){
+        if("OrderCancelled".equals(process)) {
             System.out.println("***** 결재 취소 중 *****");
             setProcess("PayCancelled");
             setPrice((double) 0);
@@ -40,11 +49,8 @@ public class Payment {
             BeanUtils.copyProperties(this, payCancelled);
             payCancelled.publishAfterCommit();
 
-
-
             //Following code causes dependency to external APIs
             // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-            System.out.println("***** BEFORE EXTERNAL *****");
             phoneseller.external.Promotion promotion = new phoneseller.external.Promotion();
             promotion.setOrderId(getOrderId());
             promotion.setPoint((double)-1);
@@ -56,13 +62,6 @@ public class Payment {
             System.out.println("***** 결재 취소 완료 *****");
         }
     }
-
-    @PreUpdate
-    public void onPreUpdate(){
-        System.out.println(toString());
-        System.out.println("preupdate");
-    }
-
 
     public Long getId() {
         return id;

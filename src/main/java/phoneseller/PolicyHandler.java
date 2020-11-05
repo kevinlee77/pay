@@ -6,6 +6,7 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,10 +25,11 @@ public class PolicyHandler{
 
         if(orderCancelled.isMe()) {
             System.out.println("##### listener PayCancelled : " + orderCancelled.toJson());
-            System.out.println("pay_policy_orderCancelled_payCancel");
+            System.out.println("pay_policy_wheneverOrderCancelled_PayCancel");
+            System.out.println((paymentRepository.findByOrderId(orderCancelled.getId()).toString()));
 
-            Payment payment = new Payment();
-            payment.setOrderId(orderCancelled.getId());
+            Optional<Payment> paymentOptional = paymentRepository.findByOrderId(orderCancelled.getId());
+            Payment payment = paymentOptional.get();
             payment.setProcess("OrderCancelled");
             paymentRepository.save(payment);
 
@@ -46,23 +48,5 @@ public class PolicyHandler{
 //            }
         }
     }
-
-//    @StreamListener(KafkaProcessor.INPUT)
-//    public void wheneverPayCompleted_OrderStatus(@Payload PayCompleted payCompleted){
-//        System.out.println("app_policy_paycompleted_status");
-//        System.out.println(payCompleted.toJson());
-//        if(payCompleted.isMe()){
-//            if(orderRepository.findById(payCompleted.getOrderId()) != null){
-//                System.out.println("====================================결제완료====================================");
-//                Order order = orderRepository.findById(payCompleted.getOrderId()).get();
-//                System.out.println(payCompleted.getProcess());
-//                order.setStatus("Payed");
-//                System.out.println(payCompleted.toJson());
-//                orderRepository.save(order);
-//            }
-//
-//        }
-//
-//    }
 
 }
