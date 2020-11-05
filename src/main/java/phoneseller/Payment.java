@@ -29,46 +29,38 @@ public class Payment {
             BeanUtils.copyProperties(this, payCompleted);
             payCompleted.publish();
 
-//            try {
-//                Thread.currentThread().sleep((long) (400 + Math.random() * 220));
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-
             System.out.println(toString());
             System.out.println("***** 결재 완료 *****");
 
-        }
-    }
-
-    @PostUpdate
-    public void onPostUpdate(){
-        System.out.println(toString());
-        if("OrderCancelled".equals(process)) {
+        } else if("OrderCancelled".equals(process)) {
             System.out.println("***** 결재 취소 중 *****");
-            setProcess("Pay Cancelled");
+            setProcess("PayCancelled");
             setPrice((double) 0);
-//            PayCancelled payCancelled = new PayCancelled();
-//            BeanUtils.copyProperties(this, payCancelled);
-//            payCancelled.publishAfterCommit();
+            PayCancelled payCancelled = new PayCancelled();
+            BeanUtils.copyProperties(this, payCancelled);
+            payCancelled.publishAfterCommit();
 
-            System.out.println("***** 결재 취소 완료 *****");
+
 
             //Following code causes dependency to external APIs
             // it is NOT A GOOD PRACTICE. instead, Event-Policy mapping is recommended.
-
+            System.out.println("***** BEFORE EXTERNAL *****");
             phoneseller.external.Promotion promotion = new phoneseller.external.Promotion();
+            promotion.setOrderId(getOrderId());
+            promotion.setPoint((double)-1);
+            promotion.setProcess("PayCancelled");
             // mappings goes here
             PayApplication.applicationContext.getBean(phoneseller.external.PromotionService.class)
                     .payCancel(promotion);
 
+            System.out.println("***** 결재 취소 완료 *****");
         }
     }
 
-    @PostRemove
-    public void onPostRemove() {
+    @PreUpdate
+    public void onPreUpdate(){
         System.out.println(toString());
-        System.out.println("결제취소3");
+        System.out.println("preupdate");
     }
 
 

@@ -5,6 +5,7 @@ public class Promotion {
     private Long id;
     private Long orderId;
     private Double point;
+    private String process;
 
     public Long getId() {
         return id;
@@ -25,4 +26,11 @@ public class Promotion {
         this.point = point;
     }
 
+    public String getProcess() {
+        return process;
+    }
+
+    public void setProcess(String process) {
+        this.process = process;
+    }
 }
