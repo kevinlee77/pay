@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pay
-  namespace: pp82
+  namespace: bike
   labels:
     app: pay
 spec:
@@ -18,7 +18,7 @@ spec:
       containers:
         - name: pay
 #          image: username/pay:latest
-          image: admin37.azurecr.io/pay:latest
+          image: admin27.azurecr.io/pay:latest
           ports:
             - containerPort: 8080
           env:
